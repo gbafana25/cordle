@@ -16,8 +16,8 @@ char *get_random_word() {
 	int c = 0;
 	while(getline(&l, &size, w) != -1) {
 		if(c == random) {
-			//break;
-			if(strlen(l) == 6) {
+			// avoid proper nouns/names
+			if(strlen(l) == 6 && l[0] > 'Z') {
 				break;
 			}
 		} else {
@@ -27,8 +27,6 @@ char *get_random_word() {
 	strncpy(final, l, 5);
 	final[6] = '\0';
 	return final;
-	//printf("%s", final);
-	//printf("%d\n", strlen(l));
 		
 
 }
@@ -37,5 +35,30 @@ char *get_random_word() {
 int main() {
 	char *ran = get_random_word();
 	printf("%s\n", ran);
+	printf("%d\n", strlen(ran));
+	char guess[5];
+	int turn = 1;
+	// input loop
+	while(true) {
+		if(turn > 6) {
+			break;
+			printf("Out of turns, word was %s\n", ran);
+		}
+		printf("Guess a 5-letter word (Turn %d/6): ", turn);
+		// `5s` prevents buffer overflows
+		scanf("%5s", guess);	
+		if(strlen(guess) != 5) {
+			printf("Invalid Length! Try again\n");
+		} else {
+			int result = strncmp(guess, ran, 5);
+			if(result == 0) {
+				printf("You win\n");
+				break;
+			} else {
+				turn++;
+			}
+
+		}
+	}
 
 }
