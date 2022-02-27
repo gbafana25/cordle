@@ -37,7 +37,6 @@ void show_progress(char *answer, char t[5]) {
 	for(int i = 0; i < strlen(t); i++) {
 		for(int j = 0; j < strlen(answer); j++) {
 			if(t[i] == answer[j]) {
-				//printf("found letter\n");
 				if(i == j) {
 					write(STDOUT_FILENO, "\e[0;30;42m", 11);
 					break;
@@ -60,15 +59,15 @@ void show_progress(char *answer, char t[5]) {
 
 int main() {
 	char *ran = get_random_word();
-	printf("%s\n", ran);
-	printf("%d\n", strlen(ran));
+	//printf("%s\n", ran);
+	//printf("%d\n", strlen(ran));
 	char guess[5];
 	int turn = 1;
 	// input loop
 	while(true) {
 		if(turn > 6) {
-			break;
 			printf("Out of turns, word was %s\n", ran);
+			break;
 		}
 		printf("Guess a 5-letter word (Turn %d/6): ", turn);
 		// `5s` prevents buffer overflows
