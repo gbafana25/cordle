@@ -13,7 +13,7 @@ char *get_random_word() {
 	//char final[6];
 	char *final = malloc(sizeof(char) * 6);
 	srand(time(0));
-	int random = (rand()%(FILE_LENGTH/2));
+	int random = (rand()%(FILE_LENGTH));
 	int c = 0;
 	while(getline(&l, &size, w) != -1) {
 		if(c == random) {
@@ -46,6 +46,7 @@ void show_progress(char *answer, char t[5]) {
 				}
 			} else {
 				write(STDOUT_FILENO, "\e[0;30;47m", 11);
+				//break;
 			}
 		}
 		write(STDOUT_FILENO, (void *) &t[i], 1);
@@ -59,10 +60,9 @@ void show_progress(char *answer, char t[5]) {
 
 int main() {
 	char *ran = get_random_word();
-	//printf("%s\n", ran);
-	//printf("%d\n", strlen(ran));
-	char guess[5];
+	char guess[6];
 	int turn = 1;
+	//memset(guess, 0, sizeof(guess));
 	// input loop
 	while(true) {
 		if(turn > 6) {
@@ -72,8 +72,10 @@ int main() {
 		printf("Guess a 5-letter word (Turn %d/6): ", turn);
 		// `5s` prevents buffer overflows
 		scanf("%5s", guess);	
+		guess[6] = '\0';
 		if(strlen(guess) != 5) {
 			printf("Invalid Length! Try again\n");
+			//memset(guess, 0, sizeof(guess));
 		} else {
 			int result = strncmp(guess, ran, 5);
 			if(result == 0) {
@@ -81,10 +83,13 @@ int main() {
 				break;
 			} else {
 				show_progress(ran, guess);
+				//memset(guess, 0, sizeof(guess));
 				turn++;
 			}
 
 		}
+		
 	}
+	
 
 }
