@@ -1,9 +1,9 @@
-all: main
+all: cordle
 
-main: $(wildcard *.c)
-	gcc $(wildcard *.c) -o main
+cordle: $(wildcard *.c)
+	gcc $(wildcard *.c) -o cordle 
 
 clean:
-	rm main
+	rm cordle 
 run: all
-	./main
+	./cordle

@@ -10,7 +10,6 @@ char *get_random_word() {
 	FILE *w = fopen("words", "r");
 	char *l;
 	size_t size = 0;
-	//char final[6];
 	char *final = malloc(sizeof(char) * 6);
 	srand(time(0));
 	int random = (rand()%(FILE_LENGTH));
@@ -38,14 +37,14 @@ void show_progress(char *answer, char t[5]) {
 		for(int j = 0; j < strlen(answer); j++) {
 			if(t[i] == answer[j]) {
 				if(i == j) {
-					write(STDOUT_FILENO, "\e[0;30;42m", 11);
+					write(STDOUT_FILENO, "\e[1;30;2;42m", 13);
 					break;
 				} else {
-					write(STDOUT_FILENO, "\e[0;30;43m", 11);
+					write(STDOUT_FILENO, "\e[1;30;2;43m", 13);
 					break;
 				}
 			} else {
-				write(STDOUT_FILENO, "\e[0;30;47m", 11);
+				write(STDOUT_FILENO, "\e[1;30;2;47m", 13);
 				//break;
 			}
 		}
@@ -62,9 +61,11 @@ int main() {
 	char *ran = get_random_word();
 	char guess[6];
 	int turn = 1;
-	//memset(guess, 0, sizeof(guess));
+	printf("\e[1;33mCordle - wordle in C\e[0m\n");
+
 	// input loop
 	while(true) {
+		// quit if out of turns
 		if(turn > 6) {
 			printf("Out of turns, word was %s\n", ran);
 			break;
@@ -75,15 +76,15 @@ int main() {
 		guess[6] = '\0';
 		if(strlen(guess) != 5) {
 			printf("Invalid Length! Try again\n");
-			//memset(guess, 0, sizeof(guess));
+			memset(&guess, 0, sizeof(guess));
 		} else {
+	
 			int result = strncmp(guess, ran, 5);
 			if(result == 0) {
 				printf("You win\n");
 				break;
 			} else {
 				show_progress(ran, guess);
-				//memset(guess, 0, sizeof(guess));
 				turn++;
 			}
 
