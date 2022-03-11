@@ -31,20 +31,20 @@ char *get_random_word() {
 
 }
 
-void show_progress(char *answer, char t[5]) {
+void show_progress(char *answer, char t[7]) {
 
-	for(int i = 0; i < strlen(t); i++) {
+	for(int i = 0; i < strlen(t) - 1; i++) {
 		for(int j = 0; j < strlen(answer); j++) {
 			if(t[i] == answer[j]) {
 				if(i == j) {
-					write(STDOUT_FILENO, "\e[1;30;2;42m", 13);
+					write(STDOUT_FILENO, "\e[1;30;1;42m", 13);
 					break;
 				} else {
-					write(STDOUT_FILENO, "\e[1;30;2;43m", 13);
+					write(STDOUT_FILENO, "\e[1;30;1;43m", 13);
 					break;
 				}
 			} else {
-				write(STDOUT_FILENO, "\e[1;30;2;47m", 13);
+				write(STDOUT_FILENO, "\e[1;30;1;47m", 13);
 				//break;
 			}
 		}
@@ -59,7 +59,7 @@ void show_progress(char *answer, char t[5]) {
 
 int main() {
 	char *ran = get_random_word();
-	char guess[6];
+	char guess[7];
 	int turn = 1;
 	printf("\e[1;33mCordle - wordle in C\e[0m\n");
 
@@ -72,9 +72,10 @@ int main() {
 		}
 		printf("Guess a 5-letter word (Turn %d/6): ", turn);
 		// `5s` prevents buffer overflows
-		scanf("%5s", guess);	
+		//scanf("%5s", guess);
+		fgets(guess, 7, stdin);
 		guess[6] = '\0';
-		if(strlen(guess) != 5) {
+		if(sizeof(guess) != 7) {
 			printf("Invalid Length! Try again\n");
 			memset(&guess, 0, sizeof(guess));
 		} else {
