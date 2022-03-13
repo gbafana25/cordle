@@ -4,16 +4,21 @@
 #include <stdbool.h>
 #include <unistd.h>
 
-#define FILE_LENGTH 85166
+#define FILE_LENGTH 85166    // line count
 
 char *get_random_word() {
 	FILE *w = fopen("words", "r");
 	char *l;
 	size_t size = 0;
 	char *final = malloc(sizeof(char) * 6);
+	// seed for random generator
 	srand(time(0));
 	int random = (rand()%(FILE_LENGTH));
 	int c = 0;
+	/*
+	scans each line until it gets 
+	to the random word
+	*/
 	while(getline(&l, &size, w) != -1) {
 		if(c == random) {
 			// avoid proper nouns/names
@@ -31,24 +36,34 @@ char *get_random_word() {
 
 }
 
-void show_progress(char *answer, char t[7]) {
+void show_progress(char *answer, char t[5]) {
 
 	for(int i = 0; i < strlen(t) - 1; i++) {
 		for(int j = 0; j < strlen(answer); j++) {
 			if(t[i] == answer[j]) {
 				if(i == j) {
-					write(STDOUT_FILENO, "\e[1;30;1;42m", 13);
+					/* 	
+					text style is switched from bold to regular
+					in order to improve readability in the tty
+					*/
+
+
+					// letter is in the right position, highlight green
+					write(STDOUT_FILENO, "\e[1;30;22;42m", 14);
 					break;
 				} else {
-					write(STDOUT_FILENO, "\e[1;30;1;43m", 13);
+					// letter exists in word, highlight yellow/orange
+					write(STDOUT_FILENO, "\e[1;30;22;43m", 14);
 					break;
 				}
 			} else {
-				write(STDOUT_FILENO, "\e[1;30;1;47m", 13);
-				//break;
+				// letter doesn't exist, highlight white
+				write(STDOUT_FILENO, "\e[1;30;22;47m", 14);
 			}
 		}
+		// prints input char-by-char
 		write(STDOUT_FILENO, (void *) &t[i], 1);
+		// resets all text formatting from previous letter
 		write(STDOUT_FILENO, "\e[0m", 5);
 		
 	}
@@ -59,7 +74,7 @@ void show_progress(char *answer, char t[7]) {
 
 int main() {
 	char *ran = get_random_word();
-	char guess[7];
+	char guess[5];
 	int turn = 1;
 	printf("\e[1;33mCordle - wordle in C\e[0m\n");
 
@@ -71,15 +86,16 @@ int main() {
 			break;
 		}
 		printf("Guess a 5-letter word (Turn %d/6): ", turn);
-		// `5s` prevents buffer overflows
-		//scanf("%5s", guess);
-		fgets(guess, 7, stdin);
-		guess[6] = '\0';
-		if(sizeof(guess) != 7) {
+		// limits characters read at once
+		scanf("%5s", guess);
+		/*
+		prevents input from overflowing,
+		since scanf ignores characters past the 5-char limit
+		*/
+		if(strlen(guess) != 5) {
 			printf("Invalid Length! Try again\n");
 			memset(&guess, 0, sizeof(guess));
-		} else {
-	
+		} else {	
 			int result = strncmp(guess, ran, 5);
 			if(result == 0) {
 				printf("You win\n");
@@ -88,6 +104,7 @@ int main() {
 				show_progress(ran, guess);
 				turn++;
 			}
+			memset(&guess, 0, sizeof(guess));
 
 		}
 		
