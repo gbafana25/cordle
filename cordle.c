@@ -4,7 +4,7 @@
 #include <stdbool.h>
 #include <unistd.h>
 
-#define FILE_LENGTH 8007    // line count
+#define FILE_LENGTH 85166    // line count
 
 char *get_random_word() {
 	FILE *w = fopen("words", "r");
@@ -31,8 +31,28 @@ char *get_random_word() {
 	}
 	strncpy(final, l, 5);
 	final[6] = '\0';
+	fclose(w);
 	return final;
 		
+
+}
+
+bool word_exists(char g[6]) {
+	FILE *w = fopen("words", "r");
+	char *l;
+	size_t size = 0;
+	char *final = malloc(sizeof(char) * 6);
+
+	while(getline(&l, &size, w) != -1) {
+		if(strlen(l) == 6) {
+			if(strncmp(g, l, 5) == 0) {
+				fclose(w);
+				return true;
+			}
+		}
+	}
+	fclose(w);
+	return false;
 
 }
 
@@ -97,10 +117,15 @@ int main() {
 		scanf("%5s", guess);
 		guess[6] = '\0';
 		/*
+		if(word_exists(guess)) {
+			printf("word exists\n");
+		}
+		*/
+		/*
 		prevents input from overflowing,
 		since scanf ignores characters past the 5-char limit
 		*/
-		if(strlen(guess) != 5) {
+		if(strlen(guess) != 5 || !word_exists(guess)) {
 			printf("Invalid Length! Try again\n");
 			memset(&guess, 0, sizeof(guess));
 		} else {	
