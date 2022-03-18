@@ -4,7 +4,7 @@
 #include <stdbool.h>
 #include <unistd.h>
 
-#define FILE_LENGTH 85166    // line count
+#define FILE_LENGTH 8017    // line count
 
 char *get_random_word() {
 	FILE *w = fopen("words", "r");
@@ -36,26 +36,33 @@ char *get_random_word() {
 
 }
 
-void show_progress(char *answer, char t[5]) {
+bool is_in_word(char *a, char h, int curr) {
+	for(int g = curr; g < strlen(a); g++) {
+		if(a[g] == h) {
+			return true;
+		}
 
-	for(int i = 0; i < strlen(t) - 1; i++) {
+	}
+	return false;
+
+}
+
+void show_progress(char *answer, char t[6]) {
+	for(int i = 0; i < strlen(t); i++) {
 		for(int j = 0; j < strlen(answer); j++) {
-			if(t[i] == answer[j]) {
-				if(i == j) {
-					/* 	
-					text style is switched from bold to regular
-					in order to improve readability in the tty
-					*/
-
-
+			if(t[i] == answer[j]) {		
+				if(i == j || is_in_word(answer, t[i], j+1)) {
+					
 					// letter is in the right position, highlight green
-					write(STDOUT_FILENO, "\e[1;30;22;42m", 14);
+					write(STDOUT_FILENO, "\e[1;30;22;42m", 14);	
 					break;
 				} else {
 					// letter exists in word, highlight yellow/orange
 					write(STDOUT_FILENO, "\e[1;30;22;43m", 14);
 					break;
+					
 				}
+				
 			} else {
 				// letter doesn't exist, highlight white
 				write(STDOUT_FILENO, "\e[1;30;22;47m", 14);
@@ -65,16 +72,17 @@ void show_progress(char *answer, char t[5]) {
 		write(STDOUT_FILENO, (void *) &t[i], 1);
 		// resets all text formatting from previous letter
 		write(STDOUT_FILENO, "\e[0m", 5);
-		
 	}
+		
 	printf("\n");
 
 }
 
 
 int main() {
-	char *ran = get_random_word();
-	char guess[5];
+	//char *ran = get_random_word();
+	char *ran = "abaci";
+	char guess[6];
 	int turn = 1;
 	printf("\e[1;33mCordle - wordle in C\e[0m\n");
 
@@ -88,6 +96,7 @@ int main() {
 		printf("Guess a 5-letter word (Turn %d/6): ", turn);
 		// limits characters read at once
 		scanf("%5s", guess);
+		guess[6] = '\0';
 		/*
 		prevents input from overflowing,
 		since scanf ignores characters past the 5-char limit

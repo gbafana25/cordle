@@ -4,5 +4,11 @@
 
 Wordle game in C.
 
+## Usage
+
+Compile and run:
+
+`make run`
+
 ## TODO
-- fix misreading duplicate letters as out of position
+- test if input is a real word
