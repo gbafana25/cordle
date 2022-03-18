@@ -4,7 +4,7 @@
 #include <stdbool.h>
 #include <unistd.h>
 
-#define FILE_LENGTH 8017    // line count
+#define FILE_LENGTH 8007    // line count
 
 char *get_random_word() {
 	FILE *w = fopen("words", "r");
@@ -80,8 +80,7 @@ void show_progress(char *answer, char t[6]) {
 
 
 int main() {
-	//char *ran = get_random_word();
-	char *ran = "abaci";
+	char *ran = get_random_word();
 	char guess[6];
 	int turn = 1;
 	printf("\e[1;33mCordle - wordle in C\e[0m\n");
