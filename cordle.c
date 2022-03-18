@@ -36,9 +36,9 @@ char *get_random_word() {
 
 }
 
-bool is_in_word(char *a, char h, int curr) {
+bool is_in_word(char *a, char h, int curr, int target) {
 	for(int g = curr; g < strlen(a); g++) {
-		if(a[g] == h) {
+		if(a[g] == h && g == target) {
 			return true;
 		}
 
@@ -51,7 +51,7 @@ void show_progress(char *answer, char t[6]) {
 	for(int i = 0; i < strlen(t); i++) {
 		for(int j = 0; j < strlen(answer); j++) {
 			if(t[i] == answer[j]) {		
-				if(i == j || is_in_word(answer, t[i], j+1)) {
+				if(i == j || is_in_word(answer, t[i], j+1, i)) {
 					
 					// letter is in the right position, highlight green
 					write(STDOUT_FILENO, "\e[1;30;22;42m", 14);	
