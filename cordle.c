@@ -125,10 +125,13 @@ int main() {
 		prevents input from overflowing,
 		since scanf ignores characters past the 5-char limit
 		*/
-		if(strlen(guess) != 5 || !word_exists(guess)) {
+		if(strlen(guess) != 5) {
 			printf("Invalid Length! Try again\n");
 			memset(&guess, 0, sizeof(guess));
-		} else {	
+		} else if(!word_exists(guess)) {
+			printf("That word doesn't exist! Try again\n");
+			memset(&guess, 0, sizeof(guess));			
+		}else {	
 			int result = strncmp(guess, ran, 5);
 			if(result == 0) {
 				printf("You win\n");

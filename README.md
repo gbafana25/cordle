@@ -11,3 +11,4 @@ Compile and run:
 `make run`
 
 ## TODO
+- make wordlist shorter
